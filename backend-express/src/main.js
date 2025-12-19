@@ -1,16 +1,19 @@
 import express from "express";
+import cors from "cors";
+
 // import router from "router"
 
 const app = express();
 
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}))
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use("/", (req, res) => {
-  res.json({
-    code: 200,
-    status: "success",
-    message: "Hello World",
-  });
-});
+app.use("/api/v1", routes);
 
 export default app;
