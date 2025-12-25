@@ -29,5 +29,5 @@ body{
     }
 }
 .auth-card button[type="submit"] {
-    @apply border border-green-500 rounded p-2 text-white cursor-pointer bg-linear-to-r from-green-300 to-green-800 hover:bg-green-500 mt-5 w-xs mx-auto;
+    @apply border border-green-500 rounded p-2 text-white cursor-pointer bg-linear-to-r from-green-300 to-green-800 hover:from-green-500 mt-5 w-xs mx-auto;
 }

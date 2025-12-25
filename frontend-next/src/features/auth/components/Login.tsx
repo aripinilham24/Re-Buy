@@ -33,6 +33,7 @@ export default function Login() {
           <div className="input-container">
             <label htmlFor="username">Username</label>
             <input
+              required
               value={form.username}
               onChange={handleChange}
               type="text"
@@ -43,6 +44,7 @@ export default function Login() {
           <div className="input-container">
             <label htmlFor="password">Password</label>
             <input
+              required
               value={form.password}
               onChange={handleChange}
               type="password"
@@ -50,17 +52,14 @@ export default function Login() {
               placeholder="password"
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-          >
+          <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-      <div className="text-white flex justify-between mt-10">
-        <Link href={'/register'}>Register</Link>
-        <Link href={'/forgot-password'}>Lupa Password</Link>
-      </div>
+        <div className="text-white flex justify-between mt-10">
+          <Link href={"/register"}>Belum punya akun</Link>
+          <Link href={"/forgot-password"}>Lupa Password</Link>
+        </div>
       </div>
     </div>
   );

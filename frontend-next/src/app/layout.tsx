@@ -14,7 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Re:Buy",
+  title: {
+    default: "Re:Buy",
+    template: "Re:Buy | %s"
+  },
   description: "E-Commerce platform with SDG 12 focus.",
 };
 

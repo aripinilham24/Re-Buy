@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRegister } from "../hooks/useRegister";
 import { RegisterTypeProps } from "../auth.types";
+import Link from "next/link";
 
 export default function Register() {
   const [form, setForm] = useState<RegisterTypeProps>({
@@ -37,6 +38,7 @@ export default function Register() {
               onChange={handleChange}
               type="text"
               name="username"
+              required
               id="username"
             />
           </div>
@@ -47,6 +49,7 @@ export default function Register() {
               onChange={handleChange}
               type="email"
               name="email"
+              required
               id="email"
             />
           </div>
@@ -57,6 +60,7 @@ export default function Register() {
               onChange={handleChange}
               type="password"
               name="password"
+              required
               id="password"
             />
           </div>
@@ -67,6 +71,7 @@ export default function Register() {
               onChange={handleChange}
               type="password"
               name="confirmPassword"
+              required
               id="confirmPassword"
             />
           </div>
@@ -74,6 +79,9 @@ export default function Register() {
             {loading ? "Submitting..." : "Register"}
           </button>
         </form>
+        <div className="text-white flex justify-between mt-10 flex justify-center">
+          <Link href={"/login"}>Sudah punya akun</Link>
+        </div>
       </div>
     </div>
   );
