@@ -1,11 +1,11 @@
-import Login from "../features/auth/login/components";
-import Register from "../features/auth/register/components";
+import LoginPage from "./(auth)/login/page";
+import Register from "./(auth)/register/page"
 
 export default function Home() {
   return (
     <>
-    <Login />
-    <Register />
+    <LoginPage />
+    {/* <Register /> */}
     </>
   );
 }

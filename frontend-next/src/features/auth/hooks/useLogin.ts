@@ -2,7 +2,6 @@
 
 import { useState} from "react";
 import Swal from "sweetalert2";
-import api from "@/src/lib/axios";
 import { LoginTypeProps } from "../auth.types";
 import { loginService } from "../services/authServices";
 
@@ -18,6 +17,7 @@ export const useLogin = () => {
                 title: "Success",
                 text: "Login berhasil!",
             });
+            localStorage.setItem("token", res.token);
             return res;
         } catch (error) {
             Swal.fire({
@@ -25,6 +25,7 @@ export const useLogin = () => {
                 title: "Error",
                 text: "Login gagal. Periksa kembali username dan password Anda.",
             });
+            throw error;
         } finally {
             setLoading(false);
         }
