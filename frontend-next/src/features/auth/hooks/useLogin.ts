@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useState} from "react";
 import Swal from "sweetalert2";
 import { LoginTypeProps } from "../auth.types";

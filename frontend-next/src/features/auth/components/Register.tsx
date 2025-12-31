@@ -79,7 +79,7 @@ export default function Register() {
             {loading ? "Submitting..." : "Register"}
           </button>
         </form>
-        <div className="text-white flex justify-between mt-10 flex justify-center">
+        <div className="text-white mt-10 flex justify-center">
           <Link href={"/login"}>Sudah punya akun</Link>
         </div>
       </div>
