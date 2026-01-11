@@ -1,10 +1,11 @@
-// Placeholder validation schemas for auth routes
-// Replace with real validation logic (e.g., Joi) as needed
+export const validateRegister = ({ username, email, password }) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const RegisterSchema = {
-  // define expected fields if using a real validator
-};
+  if (!username || !email || !password) {
+    throw { status: 400, message: "Semua field wajib diisi." };
+  }
 
-export const LoginSchema = {
-  // define expected fields if using a real validator
+  if (!emailRegex.test(email)) {
+    throw { status: 400, message: "Format email tidak valid." };
+  }
 };

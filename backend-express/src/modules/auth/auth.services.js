@@ -2,12 +2,17 @@ import userModel from '../user/user.model';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import generateToken from '../../utils/generaetToken';
 
-const login = (data) => {
+dotenv.config();
+
+const {acessToken, refreshToken} = generateToken(data);
+
+const register = (data) => {
   return;
 };
 
-const register = (data) => {
+const login = (data) => {
   return;
 };
 
