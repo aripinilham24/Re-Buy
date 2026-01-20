@@ -29,7 +29,7 @@ export default function Register() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Register Re:Buy</h1>
+        <h1>Register ReBuy</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-container">
             <label htmlFor="username">Username</label>

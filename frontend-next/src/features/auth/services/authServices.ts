@@ -7,6 +7,6 @@ export const loginService = async (data: LoginTypeProps): Promise<AuthResponse> 
 }
 
 export const registerService = async (data: RegisterTypeProps): Promise<AuthResponse> => {
-    const res = await api.post("/auth/registerv2", data);
+    const res = await api.post("/auth/register", data);
     return res.data;
 }
