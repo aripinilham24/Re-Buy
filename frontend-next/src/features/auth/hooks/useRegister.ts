@@ -26,7 +26,7 @@ export const useRegister = () => {
                 title: "Error",
                 text: "Registrasi gagal. Silakan coba lagi.",
             });
-            throw err;
+            
         } finally {
             setLoading(false);
         }

@@ -5,6 +5,7 @@ import { RegisterTypeProps } from "../auth.types";
 import Link from "next/link";
 
 export default function Register() {
+  console.log('API URL = ', process.env.NEXT_PUBLIC_API_BASE_URL);
   const [form, setForm] = useState<RegisterTypeProps>({
     username: "",
     email: "",

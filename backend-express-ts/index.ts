@@ -1,9 +1,14 @@
 import express from "express";
-import type { Request, Response } from "express";
 import cors from "cors";
 import router from './src/routes/index.js';
+import databse from './src/config/database.js';
+import { envConfig } from './src/utils/accessEnv.js';
+
+envConfig;
+
 const app = express();
 
+databse();
 app.use(
   cors({
     origin: "*",
