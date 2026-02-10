@@ -1,3 +1,4 @@
 .env*
 src/utils/tokens.ts
 dist
+node_modules
