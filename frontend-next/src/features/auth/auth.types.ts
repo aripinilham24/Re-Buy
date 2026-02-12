@@ -6,7 +6,7 @@ export interface RegisterTypeProps {
 }
 
 export interface LoginTypeProps {
-   username: string;
+   email: string;
    password: string;
 }
 

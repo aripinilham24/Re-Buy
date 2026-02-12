@@ -8,7 +8,7 @@ export default function Login() {
   const { login, loading } = useLogin();
 
   const [form, setForm] = useState<LoginTypeProps>({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -31,14 +31,14 @@ export default function Login() {
         <h1>Login Re:Buy</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-container">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input
               required
-              value={form.username}
+              value={form.email}
               onChange={handleChange}
               type="text"
-              name="username"
-              placeholder="username"
+              name="email"
+              placeholder="email"
             />
           </div>
           <div className="input-container">
