@@ -18,7 +18,7 @@ export const useRegister = () => {
                 title: "Success",
                 text: "Registrasi berhasil!",
             });
-            router.push('/dashboard')
+            router.push('/login')
             return res;
         } catch (err) {
             Swal.fire({

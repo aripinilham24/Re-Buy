@@ -45,13 +45,15 @@ const login = async (data: FormLogin) => {
   const tokens = createJwt(user);
 
   return {
-    success: true,
-    message: "User logged in successfully",
     data: {
-      userId: user._id,
-      name: user.username,
-      email: user.email,
-      profile: user.avatar,
+      success: true,
+      message: "User logged in successfully",
+      data: {
+        userId: user._id,
+        name: user.username,
+        email: user.email,
+        profile: user.avatar,
+      },
     },
     tokens,
   };

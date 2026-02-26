@@ -3,9 +3,11 @@ import { useState} from "react";
 import Swal from "sweetalert2";
 import { LoginTypeProps } from "../auth.types";
 import { loginService } from "../services/authServices";
+import { useRouter } from "next/navigation";
 
 export const useLogin = () => {
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const login = async (data:LoginTypeProps)=> {
         setLoading(true);
@@ -16,8 +18,7 @@ export const useLogin = () => {
                 title: "Success",
                 text: "Login berhasil!",
             });
-            localStorage.setItem("token", res.token);
-            return res;
+            router.push('/dashboard')
         } catch (error) {
             Swal.fire({
                 icon: "error",
