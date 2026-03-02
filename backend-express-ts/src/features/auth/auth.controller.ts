@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import type { AuthRequest } from "../../middlewares/auth.middleware.js";
 import services from "./auth.services.js";
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +26,17 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const me = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await services.me(req.user!.userId);
+    res.status(200).json(user);
+  } catch (e: unknown) {
+    next(e);
+  }
+};
+
 export default {
   register,
   login,
+  me,
 };

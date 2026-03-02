@@ -59,4 +59,19 @@ const login = async (data: FormLogin) => {
   };
 };
 
-export default { register, login };
+const me = async (userId: string) => {
+  const user = await UserModel.findById(userId);
+  if (!user) throw new AppError("User not found", 404);
+
+  return {
+    success: true,
+    data: {
+      userId: user._id,
+      name: user.username,
+      email: user.email,
+      profile: user.avatar,
+    },
+  };
+};
+
+export default { register, login, me };
