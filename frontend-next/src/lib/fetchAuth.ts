@@ -1,11 +1,13 @@
-import api from "@/src/lib/axios.js";
-import { useAuthStore } from "@/src/store/auth.store.js";
+import api from "@/src/lib/axios";
+import { useAuthStore } from "@/src/store/auth.store";
 
 export const fetchMe = async () => {
   try {
     const res = await api.get("/auth/me");
     useAuthStore.getState().setUser(res.data.user);
-  } catch {
+    console.log(res)
+  } catch (err) {
     useAuthStore.getState().setUser(null);
+    console.log(err)
   }
 };

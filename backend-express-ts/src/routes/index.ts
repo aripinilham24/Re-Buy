@@ -1,8 +1,6 @@
 import {Router} from 'express';
 import type {Request, Response} from 'express';
 import AuthRoutes from '../features/auth/auth.routes.js';
-import { verifyAuth } from '../middlewares/auth.middleware.js';
-import { authorize } from '../middlewares/authorize.middleware.js';
 
 const router = Router();
 
