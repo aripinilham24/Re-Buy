@@ -1,5 +1,6 @@
 import type { FormRegister } from "../../types/formAuth.types.js";
 import type { FormLogin } from "../../types/formAuth.types.js";
+import { AppError } from "../../utils/AppError.js";
 
 export const validateRegister = ({
   username,
@@ -8,37 +9,21 @@ export const validateRegister = ({
 }: FormRegister) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!username || !email || !password) {
-    throw {
-      success: false,
-      message: "All fields are required",
-      error: "ValidationError",
-    };
+    throw new AppError("All fields are required", 400);
   }
 
   if (!emailRegex.test(email)) {
-    throw {
-      success: false,
-      message: "Invalid email format",
-      error: "ValidationError",
-    };
+    throw new AppError("Invalid email format", 400);
   }
 };
 
 export const validateLogin = ({ email, password }: FormLogin) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !password) {
-    throw {
-      success: false,
-      message: "Email and password are required",
-      error: "ValidationError",
-    };
+    throw new AppError("Email and password are required", 400);
   }
 
   if (!emailRegex.test(email)) {
-    throw {
-      success: false,
-      message: "Invalid email format",
-      error: "ValidationError",
-    };
+    throw new AppError("Invalid email format", 400);
   }
 };
