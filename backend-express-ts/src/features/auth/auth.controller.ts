@@ -14,7 +14,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await services.login(req.body);
-    res.cookie("token", result.tokens, {
+    res.cookie("token", result.tokens.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

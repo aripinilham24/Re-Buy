@@ -1,12 +1,9 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import type user from "../models/user/user.type.js";
-
-dotenv.config();
 
 function generateToken(user: user) {
   const payload = {
-    id: user._id,
+    userId: user._id,
     username: user.username,
     email: user.email,
     role: user.role,
