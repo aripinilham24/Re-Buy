@@ -58,7 +58,7 @@ export default function Login() {
         </form>
         <div className="text-white flex justify-between mt-10">
           <Link href={"/register"}>Belum punya akun</Link>
-          <Link href={"/forgot-password"}>Lupa Password</Link>
+          <Link href={"/forgotPw"}>Lupa Password</Link>
         </div>
       </div>
     </div>

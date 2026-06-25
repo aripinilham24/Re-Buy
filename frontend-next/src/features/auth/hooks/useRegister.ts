@@ -10,7 +10,7 @@ export const useRegister = () => {
     const router = useRouter();
 
     const register = async (data: RegisterTypeProps) => {
-        setLoading(!loading);
+        setLoading(true);
         try {
             const res = await registerService(data);
             Swal.fire({
