@@ -10,11 +10,15 @@ export interface LoginTypeProps {
    password: string;
 }
 
+export interface AuthUser {
+  userId: string;
+  name: string;
+  email: string;
+  profile: string;
+}
+
 export interface AuthResponse {
-  token: string;
-  user: {
-    id: number;
-    username: string;
-    role: string;
-  };
+  success: boolean;
+  message: string;
+  data: AuthUser;
 }
