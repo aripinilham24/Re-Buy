@@ -12,6 +12,10 @@ import {
 import UploadRoutes from "../features/upload/upload.routes.js";
 import WishlistRoutes from "../features/wishlist/wishlist.routes.js";
 import CartRoutes from "../features/cart/cart.routes.js";
+import {
+  adminCouponRouter,
+  userCouponRouter,
+} from "../features/coupon/coupon.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -54,5 +58,12 @@ router.use(
 );
 router.use("/wishlist", WishlistRoutes);
 router.use("/cart", CartRoutes);
+router.use("/coupons", userCouponRouter);
+router.use(
+  "/admin/coupons",
+  verifyAuth,
+  authorize("admin"),
+  adminCouponRouter,
+);
 
 export default router;
