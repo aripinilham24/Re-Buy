@@ -17,6 +17,9 @@ export default function AdminLayout({
             </p>
           </div>
           <nav className="flex flex-wrap gap-4 text-sm">
+            <Link href="/admin" className="text-green-400">
+              Dashboard
+            </Link>
             <Link href="/admin/products" className="text-green-400">
               Produk
             </Link>
@@ -34,6 +37,12 @@ export default function AdminLayout({
             </Link>
             <Link href="/admin/chat" className="text-green-400">
               Chat
+            </Link>
+            <Link href="/admin/users" className="text-green-400">
+              Users
+            </Link>
+            <Link href="/admin/settings" className="text-green-400">
+              Pengaturan
             </Link>
           </nav>
         </header>
