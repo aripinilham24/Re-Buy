@@ -17,11 +17,14 @@ export const addressInputSchema = z.object({
   isDefault: z.boolean().optional(),
 });
 
+export const updateAddressSchema = addressInputSchema.partial();
+
 export const updateProfileSchema = z.object({
   username: z.string().trim().min(2).max(50),
 });
 
 export type AddressInput = z.infer<typeof addressInputSchema>;
+export type UpdateAddressInput = z.infer<typeof updateAddressSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
 export interface AddressDto {
