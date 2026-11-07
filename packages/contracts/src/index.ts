@@ -9,3 +9,4 @@ export * from "./cart.js";
 export * from "./coupon.js";
 export * from "./order.js";
 export * from "./payment.js";
+export * from "./review.js";

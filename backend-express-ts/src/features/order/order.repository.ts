@@ -15,6 +15,16 @@ export const findOrderById = (orderId: string) =>
 export const findOrderByNumber = (orderNumber: string) =>
   OrderModel.findOne({ orderNumber });
 
+export const findCompletedOrderForProduct = (
+  userId: string,
+  productId: string,
+) =>
+  OrderModel.findOne({
+    userId,
+    status: "completed",
+    "items.productId": productId,
+  });
+
 export const findOrderForUser = (orderId: string, userId: string) =>
   OrderModel.findOne({ _id: orderId, userId });
 

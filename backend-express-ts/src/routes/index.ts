@@ -21,6 +21,11 @@ import {
   userOrderRouter,
 } from "../features/order/order.routes.js";
 import PaymentRoutes from "../features/payment/payment.routes.js";
+import {
+  adminReviewRouter,
+  publicReviewRouter,
+  userReviewRouter,
+} from "../features/review/review.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -72,11 +77,19 @@ router.use(
 );
 router.use("/orders", userOrderRouter);
 router.use("/payments", PaymentRoutes);
+router.use("/reviews", publicReviewRouter);
+router.use("/reviews", userReviewRouter);
 router.use(
   "/admin/orders",
   verifyAuth,
   authorize("admin"),
   adminOrderRouter,
+);
+router.use(
+  "/admin/reviews",
+  verifyAuth,
+  authorize("admin"),
+  adminReviewRouter,
 );
 
 export default router;

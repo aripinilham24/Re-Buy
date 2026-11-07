@@ -86,6 +86,13 @@ export const incrementSoldCount = (productId: string, quantity: number) =>
     $inc: { soldCount: quantity },
   });
 
+export const updateProductRating = (
+  productId: string,
+  ratingAvg: number,
+  ratingCount: number,
+) =>
+  ProductModel.findByIdAndUpdate(productId, { ratingAvg, ratingCount });
+
 export const listProducts = async (params: ProductListParams) => {
   const filter: QueryFilter<Product> = {};
 
