@@ -16,6 +16,10 @@ import {
   adminCouponRouter,
   userCouponRouter,
 } from "../features/coupon/coupon.routes.js";
+import {
+  adminOrderRouter,
+  userOrderRouter,
+} from "../features/order/order.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -64,6 +68,13 @@ router.use(
   verifyAuth,
   authorize("admin"),
   adminCouponRouter,
+);
+router.use("/orders", userOrderRouter);
+router.use(
+  "/admin/orders",
+  verifyAuth,
+  authorize("admin"),
+  adminOrderRouter,
 );
 
 export default router;

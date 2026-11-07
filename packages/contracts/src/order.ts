@@ -14,8 +14,15 @@ export const orderStatusUpdateSchema = z.object({
   trackingNumber: z.string().trim().max(100).optional(),
 });
 
+export const orderListQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+  cursor: z.string().optional(),
+  status: orderStatusSchema.optional(),
+});
+
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 export type OrderStatusUpdateInput = z.infer<typeof orderStatusUpdateSchema>;
+export type OrderListQuery = z.infer<typeof orderListQuerySchema>;
 
 export interface OrderItemDto {
   productId: string;

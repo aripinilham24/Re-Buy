@@ -63,6 +63,29 @@ export const deleteProduct = (productId: string) =>
 export const countProductsByCategory = (categoryId: string) =>
   ProductModel.countDocuments({ categoryId });
 
+export const decrementStock = (productId: string, quantity: number) =>
+  ProductModel.findOneAndUpdate(
+    {
+      _id: productId,
+      status: "active",
+      stock: { $gte: quantity },
+    },
+    { $inc: { stock: -quantity } },
+    { returnDocument: "after" },
+  );
+
+export const incrementStock = (productId: string, quantity: number) =>
+  ProductModel.findByIdAndUpdate(
+    productId,
+    { $inc: { stock: quantity } },
+    { returnDocument: "after" },
+  );
+
+export const incrementSoldCount = (productId: string, quantity: number) =>
+  ProductModel.findByIdAndUpdate(productId, {
+    $inc: { soldCount: quantity },
+  });
+
 export const listProducts = async (params: ProductListParams) => {
   const filter: QueryFilter<Product> = {};
 

@@ -18,6 +18,7 @@ const envSchema = z.object({
     .string()
     .min(16, "REFRESH_TOKEN_SECRET must be at least 16 characters"),
   BCRYPT_SALT: z.coerce.number().int().min(4).max(31).default(10),
+  SHIPPING_FLAT_RATE: z.coerce.number().int().min(0).default(15_000),
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
     .default("info"),
