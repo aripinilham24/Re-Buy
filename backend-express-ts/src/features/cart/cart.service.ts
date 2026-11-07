@@ -29,7 +29,13 @@ export const addItem = async (
   productId: string,
   quantity: number,
 ) => {
-  await assertProductAvailable(productId, quantity);
+  const cart = await cartRepository.findRawCart(userId);
+  const existing = cart?.items.find(
+    (entry) => entry.productId.toString() === productId,
+  );
+  const nextQuantity = (existing?.quantity ?? 0) + quantity;
+
+  await assertProductAvailable(productId, nextQuantity);
   await cartRepository.addItem(userId, productId, quantity);
   return getCart(userId);
 };

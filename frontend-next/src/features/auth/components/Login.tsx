@@ -12,7 +12,11 @@ import { useLogin } from "../hooks/useLogin";
 
 export default function Login() {
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("next") ?? "/dashboard";
+  const nextParam = searchParams.get("next");
+  const redirectTo =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
+      ? nextParam
+      : "/dashboard";
   const { login, loading } = useLogin(redirectTo);
 
   const form = useForm<LoginInput>({

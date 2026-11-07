@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       {
         protocol: imageUrl.protocol.replace(":", "") as "http" | "https",
         hostname: imageUrl.hostname,
-        port: imageUrl.port,
+        ...(imageUrl.port ? { port: imageUrl.port } : {}),
       },
     ],
   },

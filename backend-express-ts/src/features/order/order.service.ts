@@ -62,6 +62,10 @@ export const quote = async (
   couponCode?: string,
 ): Promise<CheckoutQuote> => {
   const cart = await cartService.getCart(userId);
+  if (cart.items.length === 0) {
+    throw AppError.badRequest("Cart is empty");
+  }
+
   const coupon = couponCode
     ? await validateCoupon(couponCode, cart.subtotal, userId)
     : null;
