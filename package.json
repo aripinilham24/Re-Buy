@@ -1,0 +1,31 @@
+{
+  "name": "rebuy",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend-express-ts",
+    "frontend-next",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev --workspace backend-express-ts",
+    "dev:web": "npm run dev --workspace frontend-next",
+    "build": "npm run build --workspace @rebuy/contracts && npm run build --workspace backend-express-ts && npm run build --workspace frontend-next",
+    "lint": "npm run lint --workspace frontend-next",
+    "typecheck": "npm run typecheck --workspace @rebuy/contracts && npm run typecheck --workspace backend-express-ts && npm run typecheck --workspace frontend-next",
+    "test": "npm run test --workspace backend-express-ts && npm run test --workspace frontend-next",
+    "seed": "npm run seed --workspace backend-express-ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true,
+    "esbuild@0.28.2": true,
+    "msw@2.15.0": true
+  }
+}

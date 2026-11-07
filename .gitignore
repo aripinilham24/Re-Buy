@@ -1,1 +1,8 @@
+node_modules/
 AGENTS.md
+.env
+.env.*
+!.env.example
+dist/
+.next/
+coverage/
