@@ -15,8 +15,15 @@ export default function Navbar() {
         Re:Buy
       </Link>
       <div className="flex justify-center items-center gap-5">
+        <Link href="/products" className="text-white">
+          Katalog
+        </Link>
+
         {user ? (
           <>
+            <Link href="/wishlist" className="text-white">
+              Wishlist
+            </Link>
             <Link href="/dashboard" className="text-white">
               Dashboard
             </Link>
