@@ -5,6 +5,7 @@ import type {
   UnreadNotificationCount,
 } from "@rebuy/contracts";
 import { AppError } from "../../common/errors.js";
+import { emitToUser } from "../../socket.js";
 import * as notificationRepository from "./notification.repository.js";
 import { toNotificationDto } from "./notification.repository.js";
 
@@ -16,7 +17,9 @@ export const notify = async (data: {
   link?: string;
 }): Promise<NotificationDto> => {
   const notification = await notificationRepository.createNotification(data);
-  return toNotificationDto(notification);
+  const dto = toNotificationDto(notification);
+  emitToUser(data.userId, "notification:new", dto);
+  return dto;
 };
 
 export const listNotifications = async (

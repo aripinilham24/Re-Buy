@@ -27,6 +27,10 @@ import {
   userReviewRouter,
 } from "../features/review/review.routes.js";
 import NotificationRoutes from "../features/notification/notification.routes.js";
+import {
+  adminChatRouter,
+  userChatRouter,
+} from "../features/chat/chat.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -81,6 +85,7 @@ router.use("/payments", PaymentRoutes);
 router.use("/reviews", publicReviewRouter);
 router.use("/reviews", userReviewRouter);
 router.use("/notifications", NotificationRoutes);
+router.use("/chat", userChatRouter);
 router.use(
   "/admin/orders",
   verifyAuth,
@@ -92,6 +97,12 @@ router.use(
   verifyAuth,
   authorize("admin"),
   adminReviewRouter,
+);
+router.use(
+  "/admin/chat",
+  verifyAuth,
+  authorize("admin"),
+  adminChatRouter,
 );
 
 export default router;
