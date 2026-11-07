@@ -1,21 +1,18 @@
-import mongoose from 'mongoose';
-import { envConfig } from '../utils/accessEnv.js';
+import mongoose from "mongoose";
+import { env } from "./env.js";
+import { logger } from "../common/logger.js";
 
-envConfig;
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(env.MONGODB_URL);
+    logger.info("MongoDB connected");
+  } catch (error) {
+    logger.error({ error }, "MongoDB connection failed");
+    throw error;
+  }
+};
 
-const connectDB = async () => {
-    
-    try {
-        const url = process.env.MONGODB_URL;
-        if (!url) {
-            throw new Error('MongoDB connection URL is not defined in environment variables');
-        }
-        await mongoose.connect(url);
-        console.log('MongoDB connected successfully');
-    } catch (e) {
-        console.error(`mongodb connection ${e}`);
-        process.exit(1);
-    }
-}
-
-export default connectDB;
+export const disconnectDB = async () => {
+  await mongoose.disconnect();
+  logger.info("MongoDB disconnected");
+};

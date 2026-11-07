@@ -1,6 +1,6 @@
 import type { FormRegister } from "../../types/formAuth.types.js";
 import type { FormLogin } from "../../types/formAuth.types.js";
-import { AppError } from "../../utils/AppError.js";
+import { AppError } from "../../common/errors.js";
 
 export const validateRegister = ({
   username,

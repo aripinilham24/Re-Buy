@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": "./src",
     "outDir": "./dist",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -13,6 +13,8 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "types": ["node"]
   },
-  "exclude": ["dist", "node_modules"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "node_modules"]
 }

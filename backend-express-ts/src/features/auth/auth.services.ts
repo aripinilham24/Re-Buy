@@ -3,7 +3,8 @@ import bcrypt from "bcrypt";
 import type { FormRegister, FormLogin } from "../../types/formAuth.types.js";
 import { validateRegister, validateLogin } from "./auth.validations.js";
 import createJwt from "../../utils/jwt.utils.js";
-import { AppError } from "../../utils/AppError.js";
+import { AppError } from "../../common/errors.js";
+import { env } from "../../config/env.js";
 
 const register = async (data: FormRegister) => {
   validateRegister(data);
@@ -11,8 +12,7 @@ const register = async (data: FormRegister) => {
   const existingUser = await UserModel.findOne({ email });
   if (existingUser) throw new AppError("Email already in use", 409);
 
-  const saltRounds = Number(process.env.BCRYPT_SALT) || 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const hashedPassword = await bcrypt.hash(password, env.BCRYPT_SALT);
 
   const user = await UserModel.create({
     username,

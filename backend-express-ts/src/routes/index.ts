@@ -1,17 +1,21 @@
-import {Router} from 'express';
-import type {Request, Response} from 'express';
-import AuthRoutes from '../features/auth/auth.routes.js';
+import { Router } from "express";
+import AuthRoutes from "../features/auth/auth.routes.js";
+import { sendSuccess } from "../common/http.js";
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-    res.status(200).json({
-        success: true,
-        message: 'API is working',
-        data: null
-    })
+router.get("/health", (_req, res) => {
+  return sendSuccess(res, {
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
 });
 
-router.use('/auth', AuthRoutes);
+router.get("/", (_req, res) => {
+  return sendSuccess(res, null, "API is working");
+});
+
+router.use("/auth", AuthRoutes);
 
 export default router;

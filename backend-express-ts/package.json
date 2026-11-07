@@ -1,26 +1,33 @@
 {
   "name": "backend-express-ts",
   "version": "1.0.0",
-  "description": "",
+  "description": "Re:Buy API",
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development tsx watch index.ts",
+    "dev": "NODE_ENV=development tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx src/scripts/seed.ts"
   },
   "dependencies": {
+    "@rebuy/contracts": "*",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.0",
-    "mongoose": "^9.1.5"
+    "mongoose": "^9.1.5",
+    "pino": "^9.6.0",
+    "pino-http": "^10.4.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -29,6 +36,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.2.0",
+    "pino-pretty": "^13.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
