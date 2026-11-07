@@ -43,10 +43,15 @@ export const productListQuerySchema = z.object({
   sort: z.enum(["newest", "price_asc", "price_desc"]).default("newest"),
 });
 
+export const adminProductListQuerySchema = productListQuerySchema.extend({
+  status: productStatusSchema.optional(),
+});
+
 export type ProductImageInput = z.infer<typeof productImageInputSchema>;
 export type ProductInput = z.infer<typeof productInputSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type ProductListQuery = z.infer<typeof productListQuerySchema>;
+export type AdminProductListQuery = z.infer<typeof adminProductListQuerySchema>;
 
 export interface ProductImageDto {
   key: string;

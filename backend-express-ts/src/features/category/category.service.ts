@@ -7,6 +7,7 @@ import { AppError } from "../../common/errors.js";
 import { buildUniqueSlug, slugify } from "../../common/slug.js";
 import * as categoryRepository from "./category.repository.js";
 import { toCategoryDto } from "./category.repository.js";
+import { countProductsByCategory } from "../product/product.repository.js";
 
 const assertParent = async (parentId?: string | null) => {
   if (!parentId) return;
@@ -74,6 +75,11 @@ export const deleteCategory = async (categoryId: string) => {
   const children = await categoryRepository.countChildCategories(categoryId);
   if (children > 0) {
     throw AppError.conflict("Category still has child categories");
+  }
+
+  const products = await countProductsByCategory(categoryId);
+  if (products > 0) {
+    throw AppError.conflict("Category still has products");
   }
 
   await categoryRepository.deleteCategory(categoryId);

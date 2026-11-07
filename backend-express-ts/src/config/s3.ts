@@ -1,0 +1,25 @@
+import { S3Client } from "@aws-sdk/client-s3";
+import { env } from "./env.js";
+
+const hasStorageConfig = Boolean(
+  env.S3_ENDPOINT && env.S3_ACCESS_KEY && env.S3_SECRET_KEY,
+);
+
+export const s3Client = hasStorageConfig
+  ? new S3Client({
+      region: env.S3_REGION,
+      endpoint: env.S3_ENDPOINT,
+      forcePathStyle: true,
+      credentials: {
+        accessKeyId: env.S3_ACCESS_KEY!,
+        secretAccessKey: env.S3_SECRET_KEY!,
+      },
+    })
+  : null;
+
+export const s3Bucket = env.S3_BUCKET;
+
+export const toPublicObjectUrl = (key: string) => {
+  if (!env.S3_PUBLIC_URL) return key;
+  return `${env.S3_PUBLIC_URL.replace(/\/$/, "")}/${key.replace(/^\//, "")}`;
+};
