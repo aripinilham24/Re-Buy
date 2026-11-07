@@ -24,8 +24,14 @@ export default function Navbar() {
             <Link href="/wishlist" className="text-white">
               Wishlist
             </Link>
-            <Link href="/dashboard" className="text-white">
-              Dashboard
+            <Link href="/cart" className="text-white">
+              Keranjang
+            </Link>
+            <Link href="/orders" className="text-white">
+              Pesanan
+            </Link>
+            <Link href="/profile" className="text-white">
+              Profil
             </Link>
             <Button onClick={() => logout()} disabled={loading}>
               {loading ? "Logging out..." : "Logout"}

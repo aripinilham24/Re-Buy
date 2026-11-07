@@ -1,6 +1,7 @@
 import type { NextFunction, Response } from "express";
 import type {
   CheckoutInput,
+  CheckoutQuoteQuery,
   OrderListQuery,
   OrderStatusUpdateInput,
 } from "@rebuy/contracts";
@@ -8,6 +9,23 @@ import { sendSuccess } from "../../common/http.js";
 import { getValidated } from "../../middlewares/validate.middleware.js";
 import type { AuthRequest } from "../../middlewares/auth.middleware.js";
 import * as orderService from "./order.service.js";
+
+export const quote = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const query = getValidated<CheckoutQuoteQuery>(req, "query");
+    const result = await orderService.quote(
+      req.user!.userId,
+      query.couponCode,
+    );
+    return sendSuccess(res, result);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const checkout = async (
   req: AuthRequest,
@@ -115,6 +133,7 @@ export const updateStatus = async (
 };
 
 export default {
+  quote,
   checkout,
   listMine,
   getMine,

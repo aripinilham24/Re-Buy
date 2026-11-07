@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { conditionLabels, formatCurrency } from "@/lib/format";
+import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
 import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { useProduct } from "../hooks/useProducts";
 import { ProductGallery } from "./ProductGallery";
@@ -93,6 +94,10 @@ export function ProductDetail() {
         </div>
 
         <div className="flex flex-wrap gap-3">
+          <AddToCartButton
+            productId={product.productId}
+            stock={product.stock}
+          />
           <WishlistButton productId={product.productId} />
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type {
   CheckoutInput,
+  CheckoutQuote,
   OrderDto,
   OrderListQuery,
   OrderStatus,
@@ -53,6 +54,25 @@ const rollbackCheckout = async (params: {
     await couponRepository.deleteRedemptionByOrder(params.orderId);
     await orderRepository.deleteOrder(params.orderId);
   }
+};
+
+export const quote = async (
+  userId: string,
+  couponCode?: string,
+): Promise<CheckoutQuote> => {
+  const cart = await cartService.getCart(userId);
+  const coupon = couponCode
+    ? await validateCoupon(couponCode, cart.subtotal, userId)
+    : null;
+  const discount = coupon?.discount ?? 0;
+  const shippingCost = env.SHIPPING_FLAT_RATE;
+
+  return {
+    subtotal: cart.subtotal,
+    discount,
+    shippingCost,
+    grandTotal: cart.subtotal - discount + shippingCost,
+  };
 };
 
 export const checkout = async (

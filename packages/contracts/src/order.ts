@@ -20,9 +20,21 @@ export const orderListQuerySchema = z.object({
   status: orderStatusSchema.optional(),
 });
 
+export const checkoutQuoteQuerySchema = z.object({
+  couponCode: z.string().trim().optional(),
+});
+
+export interface CheckoutQuote {
+  subtotal: number;
+  discount: number;
+  shippingCost: number;
+  grandTotal: number;
+}
+
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 export type OrderStatusUpdateInput = z.infer<typeof orderStatusUpdateSchema>;
 export type OrderListQuery = z.infer<typeof orderListQuerySchema>;
+export type CheckoutQuoteQuery = z.infer<typeof checkoutQuoteQuerySchema>;
 
 export interface OrderItemDto {
   productId: string;

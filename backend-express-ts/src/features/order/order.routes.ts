@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import {
+  checkoutQuoteQuerySchema,
   checkoutSchema,
   objectIdSchema,
   orderListQuerySchema,
@@ -14,6 +15,11 @@ const orderParamsSchema = z.object({ orderId: objectIdSchema });
 
 export const userOrderRouter = Router();
 userOrderRouter.use(verifyAuth);
+userOrderRouter.get(
+  "/quote",
+  validate({ query: checkoutQuoteQuerySchema }),
+  OrderController.quote,
+);
 userOrderRouter.post(
   "/checkout",
   validate({ body: checkoutSchema }),
