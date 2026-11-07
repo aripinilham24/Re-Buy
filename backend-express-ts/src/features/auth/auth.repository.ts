@@ -9,6 +9,9 @@ export const findUserByEmail = (email: string, withPassword = false) => {
 
 export const findUserById = (userId: string) => UserModel.findById(userId);
 
+export const findUserByIdWithPassword = (userId: string) =>
+  UserModel.findById(userId).select("+password");
+
 export const createUser = (data: {
   username: string;
   email: string;

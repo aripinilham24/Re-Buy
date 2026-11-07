@@ -1,13 +1,19 @@
 import bcrypt from "bcrypt";
 import type {
+  ChangePasswordInput,
+  ForgotPasswordInput,
   LoginInput,
   RegisterInput,
   ResendVerificationInput,
+  ResetPasswordInput,
   VerifyEmailInput,
 } from "@rebuy/contracts";
 import { AppError } from "../../common/errors.js";
 import { env } from "../../config/env.js";
-import { sendVerificationEmail } from "../../common/email.js";
+import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from "../../common/email.js";
 import {
   createOpaqueToken,
   hashToken,
@@ -131,6 +137,65 @@ export const logout = async (refreshToken?: string) => {
   return { loggedOut: true };
 };
 
+export const forgotPassword = async (input: ForgotPasswordInput) => {
+  const user = await authRepository.findUserByEmail(input.email);
+
+  if (user) {
+    await authRepository.revokeAuthTokens(user._id, "reset_password");
+    const { raw, hash } = createOpaqueToken();
+    await authRepository.createAuthToken({
+      userId: user._id,
+      type: "reset_password",
+      tokenHash: hash,
+      expiresAt: hoursFromNow(1),
+    });
+    await sendPasswordResetEmail(user.email, raw);
+  }
+
+  return { sent: true };
+};
+
+export const resetPassword = async (input: ResetPasswordInput) => {
+  const token = await authRepository.consumeAuthToken(
+    hashToken(input.token),
+    "reset_password",
+  );
+  if (!token) {
+    throw AppError.badRequest("Invalid or expired reset token");
+  }
+
+  const user = await authRepository.updateUser(token.userId.toString(), {
+    password: await bcrypt.hash(input.password, env.BCRYPT_SALT),
+  });
+  if (!user) throw AppError.notFound("User not found");
+
+  await authRepository.revokeAuthTokens(token.userId, "refresh");
+  return { reset: true };
+};
+
+export const changePassword = async (
+  userId: string,
+  input: ChangePasswordInput,
+) => {
+  const user = await authRepository.findUserByIdWithPassword(userId);
+  if (!user) throw AppError.notFound("User not found");
+
+  const isCurrentPasswordValid = await bcrypt.compare(
+    input.currentPassword,
+    user.password!,
+  );
+  if (!isCurrentPasswordValid) {
+    throw AppError.badRequest("Current password is incorrect");
+  }
+
+  await authRepository.updateUser(userId, {
+    password: await bcrypt.hash(input.newPassword, env.BCRYPT_SALT),
+  });
+  await authRepository.revokeAuthTokens(user._id, "refresh");
+
+  return { updated: true };
+};
+
 export const me = async (userId: string) => {
   const user = await authRepository.findUserById(userId);
   if (!user) throw AppError.notFound("User not found");
@@ -145,5 +210,8 @@ export default {
   login,
   refresh,
   logout,
+  forgotPassword,
+  resetPassword,
+  changePassword,
   me,
 };

@@ -1,8 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import type {
+  ChangePasswordInput,
+  ForgotPasswordInput,
   LoginInput,
   RegisterInput,
   ResendVerificationInput,
+  ResetPasswordInput,
   VerifyEmailInput,
 } from "@rebuy/contracts";
 import { sendSuccess } from "../../common/http.js";
@@ -112,6 +115,52 @@ export const logout = async (
   }
 };
 
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = getValidated<ForgotPasswordInput>(req, "body");
+    const result = await services.forgotPassword(input);
+    return sendSuccess(
+      res,
+      result,
+      "If the email exists, a reset link has been sent",
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = getValidated<ResetPasswordInput>(req, "body");
+    const result = await services.resetPassword(input);
+    return sendSuccess(res, result, "Password reset successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changePassword = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const input = getValidated<ChangePasswordInput>(req, "body");
+    const result = await services.changePassword(req.user!.userId, input);
+    return sendSuccess(res, result, "Password updated");
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const me = async (
   req: AuthRequest,
   res: Response,
@@ -132,5 +181,8 @@ export default {
   login,
   refresh,
   logout,
+  forgotPassword,
+  resetPassword,
+  changePassword,
   me,
 };

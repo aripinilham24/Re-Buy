@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import {
+  changePasswordSchema,
+  forgotPasswordSchema,
   loginSchema,
   registerSchema,
   resendVerificationSchema,
+  resetPasswordSchema,
   verifyEmailSchema,
 } from "@rebuy/contracts";
 import AuthController from "./auth.controller.js";
@@ -50,6 +53,24 @@ router.post(
 );
 router.post("/refresh", authLimiter, AuthController.refresh);
 router.post("/logout", AuthController.logout);
+router.post(
+  "/forgot-password",
+  authLimiter,
+  validate({ body: forgotPasswordSchema }),
+  AuthController.forgotPassword,
+);
+router.post(
+  "/reset-password",
+  authLimiter,
+  validate({ body: resetPasswordSchema }),
+  AuthController.resetPassword,
+);
+router.patch(
+  "/password",
+  verifyAuth,
+  validate({ body: changePasswordSchema }),
+  AuthController.changePassword,
+);
 router.get("/me", verifyAuth, AuthController.me);
 
 export default router;
