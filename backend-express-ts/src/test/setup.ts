@@ -4,3 +4,6 @@ process.env.ACCESS_TOKEN_SECRET ??= "test-access-token-secret-123456";
 process.env.REFRESH_TOKEN_SECRET ??= "test-refresh-token-secret-123456";
 process.env.ORIGIN ??= "http://localhost:3000";
 process.env.LOG_LEVEL ??= "silent";
+process.env.MIDTRANS_SERVER_KEY ??= "test-midtrans-server-key";
+process.env.MIDTRANS_CLIENT_KEY ??= "test-midtrans-client-key";
+process.env.MIDTRANS_IS_PRODUCTION ??= "false";

@@ -315,3 +315,34 @@ export const updateStatusAdmin = async (
     trackingNumber: input.trackingNumber,
   });
 };
+
+export type PaymentOutcome = "paid" | "expired" | "failed" | "refunded";
+
+export const applyPaymentOutcome = async (
+  orderId: string,
+  outcome: PaymentOutcome,
+) => {
+  const order = await orderRepository.findOrderById(orderId);
+  if (!order) throw AppError.notFound("Order not found");
+
+  if (outcome === "paid") {
+    if (order.status !== "pending_payment") return toOrderDto(order);
+    return applyTransition(order, "paid", { note: "Payment settled" });
+  }
+
+  if (outcome === "expired" || outcome === "failed") {
+    if (order.status !== "pending_payment") return toOrderDto(order);
+    const target = outcome === "expired" ? "expired" : "cancelled";
+    return applyTransition(order, target, {
+      note: `Payment ${outcome}`,
+    });
+  }
+
+  if (["paid", "processing", "shipped", "delivered", "completed"].includes(order.status)) {
+    return applyTransition(order, "refunded", {
+      note: "Payment refunded",
+    });
+  }
+
+  return toOrderDto(order);
+};

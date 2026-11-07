@@ -9,6 +9,7 @@ import { OrderStatusBadge } from "@/components/ui/order-status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { orderStatusLabels } from "@/lib/order-status";
+import { PayButton } from "@/features/payment/components/PayButton";
 import { useCancelOrder, useOrder } from "../hooks/useOrders";
 
 export function OrderDetail() {
@@ -157,17 +158,20 @@ export function OrderDetail() {
       </section>
 
       {order.status === "pending_payment" ? (
-        <Button
-          variant="destructive"
-          disabled={cancel.isPending}
-          onClick={() => {
-            if (window.confirm("Batalkan pesanan ini?")) {
-              cancel.mutate(order.orderId);
-            }
-          }}
-        >
-          {cancel.isPending ? "Membatalkan..." : "Batalkan pesanan"}
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <PayButton orderId={order.orderId} />
+          <Button
+            variant="destructive"
+            disabled={cancel.isPending}
+            onClick={() => {
+              if (window.confirm("Batalkan pesanan ini?")) {
+                cancel.mutate(order.orderId);
+              }
+            }}
+          >
+            {cancel.isPending ? "Membatalkan..." : "Batalkan pesanan"}
+          </Button>
+        </div>
       ) : null}
     </main>
   );

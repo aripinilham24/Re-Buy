@@ -20,6 +20,7 @@ import {
   adminOrderRouter,
   userOrderRouter,
 } from "../features/order/order.routes.js";
+import PaymentRoutes from "../features/payment/payment.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -70,6 +71,7 @@ router.use(
   adminCouponRouter,
 );
 router.use("/orders", userOrderRouter);
+router.use("/payments", PaymentRoutes);
 router.use(
   "/admin/orders",
   verifyAuth,

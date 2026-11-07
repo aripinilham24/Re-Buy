@@ -12,6 +12,9 @@ export const createOrder = (data: Record<string, unknown>) =>
 export const findOrderById = (orderId: string) =>
   OrderModel.findById(orderId);
 
+export const findOrderByNumber = (orderNumber: string) =>
+  OrderModel.findOne({ orderNumber });
+
 export const findOrderForUser = (orderId: string, userId: string) =>
   OrderModel.findOne({ _id: orderId, userId });
 

@@ -8,3 +8,4 @@ export * from "./upload.js";
 export * from "./cart.js";
 export * from "./coupon.js";
 export * from "./order.js";
+export * from "./payment.js";
