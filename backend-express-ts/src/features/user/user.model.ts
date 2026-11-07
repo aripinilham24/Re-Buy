@@ -1,6 +1,11 @@
-import mongoose from "mongoose";
+import {
+  Schema,
+  model,
+  type HydratedDocument,
+  type InferSchemaType,
+} from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -36,17 +41,35 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["local", "google"],
       default: "local",
-      index: true,
     },
     providerId: {
       type: String,
       required: false,
       trim: true,
     },
+    emailVerifiedAt: {
+      type: Date,
+      default: null,
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+    lastLoginAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
-  }
+    versionKey: false,
+  },
 );
 
-export default mongoose.model("User", userSchema);
+userSchema.index({ role: 1, createdAt: -1 });
+userSchema.index({ isBlocked: 1 });
+
+export type User = InferSchemaType<typeof userSchema>;
+export type UserDocument = HydratedDocument<User>;
+
+export default model<User>("User", userSchema);

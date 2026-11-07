@@ -1,4 +1,4 @@
-import UserModel from "../../models/user/user.model.js";
+import UserModel from "../user/user.model.js";
 import bcrypt from "bcrypt";
 import type { FormRegister, FormLogin } from "../../types/formAuth.types.js";
 import { validateRegister, validateLogin } from "./auth.validations.js";

@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-import type user from "../models/user/user.type.js";
+import type { UserDocument } from "../features/user/user.model.js";
 import { env } from "../config/env.js";
 
-export function generateToken(user: user) {
+export function generateToken(user: UserDocument) {
   const payload = {
-    userId: String(user._id),
+    userId: user._id.toString(),
     username: user.username,
     email: user.email,
     role: user.role ?? "user",

@@ -1,4 +1,4 @@
-import UserModel from "../models/user/user.model.js";
+import UserModel from "../features/user/user.model.js";
 import { env } from "../config/env.js";
 import { connectDB, disconnectDB } from "../config/database.js";
 import { logger } from "../common/logger.js";
