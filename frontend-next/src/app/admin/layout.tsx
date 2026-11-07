@@ -32,6 +32,9 @@ export default function AdminLayout({
             <Link href="/admin/reviews" className="text-green-400">
               Review
             </Link>
+            <Link href="/admin/chat" className="text-green-400">
+              Chat
+            </Link>
           </nav>
         </header>
         {children}

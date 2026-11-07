@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/layout/AuthProvider";
+import { SocketProvider } from "@/components/layout/SocketProvider";
 import { Providers } from "./providers";
 
 const geistSans = Geist({
@@ -36,9 +37,11 @@ export default function RootLayout({
       >
         <Providers>
           <AuthProvider>
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
+            <SocketProvider>
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
+            </SocketProvider>
           </AuthProvider>
         </Providers>
       </body>
