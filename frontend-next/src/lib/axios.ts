@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import type { AxiosRequestConfig } from "axios";
 import type { ApiFailure } from "@rebuy/contracts";
 
 export class ApiError extends Error {
@@ -20,7 +21,7 @@ export class ApiError extends Error {
 }
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1",
   timeout: 10_000,
   withCredentials: true,
   headers: {
@@ -28,18 +29,49 @@ export const api = axios.create({
   },
 });
 
+type RetryableConfig = AxiosRequestConfig & { _retry?: boolean };
+
+let refreshPromise: Promise<unknown> | null = null;
+
+const toApiError = (error: AxiosError<ApiFailure>) => {
+  const body = error.response?.data;
+
+  return new ApiError(body?.message ?? error.message ?? "Request failed", {
+    status: error.response?.status,
+    code: body?.code,
+    details: body?.details,
+  });
+};
+
 api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<ApiFailure>) => {
-    const body = error.response?.data;
+  async (error: AxiosError<ApiFailure>) => {
+    const config = error.config as RetryableConfig | undefined;
+    const url = config?.url ?? "";
+    const isAuthEndpoint =
+      url.includes("/auth/login") ||
+      url.includes("/auth/refresh") ||
+      url.includes("/auth/logout");
 
-    return Promise.reject(
-      new ApiError(body?.message ?? error.message ?? "Request failed", {
-        status: error.response?.status,
-        code: body?.code,
-        details: body?.details,
-      }),
-    );
+    if (
+      error.response?.status === 401 &&
+      config &&
+      !config._retry &&
+      !isAuthEndpoint
+    ) {
+      config._retry = true;
+      try {
+        refreshPromise ??= api.post("/auth/refresh").finally(() => {
+          refreshPromise = null;
+        });
+        await refreshPromise;
+        return api(config);
+      } catch {
+        // Fall through to a normalized 401 error.
+      }
+    }
+
+    return Promise.reject(toApiError(error));
   },
 );
 

@@ -1,88 +1,90 @@
 "use client";
-import { useState } from "react";
-import { useRegister } from "../hooks/useRegister";
-import { RegisterTypeProps } from "../auth.types";
-import Link from "next/link";
 
-export default function Register() {
-  const [form, setForm] = useState<RegisterTypeProps>({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { registerSchema, type RegisterInput } from "@rebuy/contracts";
+import { AuthCard } from "@/components/layout/AuthCard";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
+import { useRegister } from "../hooks/useRegister";
+
+const registerFormSchema = registerSchema
+  .extend({
+    confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Konfirmasi password tidak sama",
+    path: ["confirmPassword"],
   });
 
+type RegisterFormValues = z.infer<typeof registerFormSchema>;
+
+export default function Register() {
   const { register, loading } = useRegister();
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const onSubmit = form.handleSubmit(async (values) => {
+    const payload: RegisterInput = {
+      username: values.username,
+      email: values.email,
+      password: values.password,
+    };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await register(form);
-  };
+    try {
+      await register(payload);
+    } catch {
+      // The mutation already surfaces a toast.
+    }
+  });
+
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h1>Register ReBuy</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="input-container">
-            <label htmlFor="username">Username</label>
-            <input
-              value={form.username}
-              onChange={handleChange}
-              type="text"
-              name="username"
-              required
-              id="username"
-            />
-          </div>
-          <div className="input-container">
-            <label htmlFor="email">Email</label>
-            <input
-              value={form.email}
-              onChange={handleChange}
-              type="email"
-              name="email"
-              required
-              id="email"
-            />
-          </div>
-          <div className="input-container">
-            <label htmlFor="password">Password</label>
-            <input
-              value={form.password}
-              onChange={handleChange}
-              type="password"
-              name="password"
-              required
-              id="password"
-            />
-          </div>
-          <div className="input-container">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              value={form.confirmPassword}
-              onChange={handleChange}
-              type="password"
-              name="confirmPassword"
-              required
-              id="confirmPassword"
-            />
-          </div>
-          <button type="submit" disabled={loading}>
-            {loading ? "Submitting..." : "Register"}
-          </button>
-        </form>
-        <div className="text-white mt-10 flex justify-center">
-          <Link href={"/login"}>Sudah punya akun</Link>
-        </div>
-      </div>
-    </div>
+    <AuthCard
+      title="Register ReBuy"
+      footer={<Link href="/login">Sudah punya akun</Link>}
+    >
+      <form onSubmit={onSubmit} noValidate>
+        <FormField
+          label="Username"
+          type="text"
+          autoComplete="username"
+          error={form.formState.errors.username?.message}
+          {...form.register("username")}
+        />
+        <FormField
+          label="Email"
+          type="email"
+          autoComplete="email"
+          error={form.formState.errors.email?.message}
+          {...form.register("email")}
+        />
+        <FormField
+          label="Password"
+          type="password"
+          autoComplete="new-password"
+          error={form.formState.errors.password?.message}
+          {...form.register("password")}
+        />
+        <FormField
+          label="Confirm Password"
+          type="password"
+          autoComplete="new-password"
+          error={form.formState.errors.confirmPassword?.message}
+          {...form.register("confirmPassword")}
+        />
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? "Submitting..." : "Register"}
+        </Button>
+      </form>
+    </AuthCard>
   );
 }

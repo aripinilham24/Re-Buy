@@ -1,31 +1,27 @@
 "use client";
-import { useState } from "react";
-import { toast } from "sonner";
+
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import type { RegisterTypeProps } from "../auth.types";
-import { registerService } from "../services/authServices";
+import { toast } from "sonner";
+import type { RegisterInput } from "@rebuy/contracts";
 import { getErrorMessage } from "@/lib/errors";
+import { registerService } from "../services/authServices";
 
 export const useRegister = () => {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const register = async (data: RegisterTypeProps) => {
-    setLoading(true);
-    try {
-      const res = await registerService(data);
+  const mutation = useMutation({
+    mutationFn: (data: RegisterInput) => registerService(data),
+    onSuccess: () => {
       toast.success("Registrasi berhasil, silakan cek email verifikasi");
       router.push("/login");
-      return res;
-    } catch (error) {
+    },
+    onError: (error) => {
       toast.error(
         getErrorMessage(error, "Registrasi gagal. Silakan coba lagi."),
       );
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
-  return { register, loading };
+  return { register: mutation.mutateAsync, loading: mutation.isPending };
 };

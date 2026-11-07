@@ -1,66 +1,64 @@
 "use client";
-import { useState } from "react";
-import { useLogin } from "../hooks/useLogin";
-import { LoginTypeProps } from "../auth.types";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { loginSchema, type LoginInput } from "@rebuy/contracts";
+import { AuthCard } from "@/components/layout/AuthCard";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
+import { useLogin } from "../hooks/useLogin";
 
 export default function Login() {
-  const { login, loading } = useLogin();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("next") ?? "/dashboard";
+  const { login, loading } = useLogin(redirectTo);
 
-  const [form, setForm] = useState<LoginTypeProps>({
-    email: "",
-    password: "",
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await login(form);
-  };
+  const onSubmit = form.handleSubmit(async (data) => {
+    try {
+      await login(data);
+    } catch {
+      // The mutation already surfaces a toast.
+    }
+  });
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h1>Login Re:Buy</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="input-container">
-            <label htmlFor="email">Email</label>
-            <input
-              required
-              value={form.email}
-              onChange={handleChange}
-              type="text"
-              name="email"
-              placeholder="email"
-            />
-          </div>
-          <div className="input-container">
-            <label htmlFor="password">Password</label>
-            <input
-              required
-              value={form.password}
-              onChange={handleChange}
-              type="password"
-              name="password"
-              placeholder="password"
-            />
-          </div>
-          <button type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-        <div className="text-white flex justify-between mt-10">
-          <Link href={"/register"}>Belum punya akun</Link>
-          <Link href={"/forgotPw"}>Lupa Password</Link>
-        </div>
-      </div>
-    </div>
+    <AuthCard
+      title="Login Re:Buy"
+      footer={
+        <>
+          <Link href="/register">Belum punya akun</Link>
+          <Link href="/forgot-password">Lupa password</Link>
+        </>
+      }
+    >
+      <form onSubmit={onSubmit} noValidate>
+        <FormField
+          label="Email"
+          type="email"
+          placeholder="email@example.com"
+          autoComplete="email"
+          error={form.formState.errors.email?.message}
+          {...form.register("email")}
+        />
+        <FormField
+          label="Password"
+          type="password"
+          placeholder="password"
+          autoComplete="current-password"
+          error={form.formState.errors.password?.message}
+          {...form.register("password")}
+        />
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? "Logging in..." : "Login"}
+        </Button>
+      </form>
+    </AuthCard>
   );
 }

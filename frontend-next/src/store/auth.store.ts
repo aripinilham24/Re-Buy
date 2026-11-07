@@ -1,15 +1,16 @@
-import {create} from 'zustand';
-import {User} from '../types/type';
+import { create } from "zustand";
+import type { AuthUser } from "@rebuy/contracts";
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  setUser: (user: User | null) => void;
+  setUser: (user: AuthUser | null) => void;
+  setLoading: (isLoading: boolean) => void;
   logout: () => void;
 }
-  
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
@@ -18,13 +19,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   setUser: (user) =>
     set({
       user,
-      isAuthenticated: !!user,
+      isAuthenticated: Boolean(user),
       isLoading: false,
     }),
+
+  setLoading: (isLoading) => set({ isLoading }),
 
   logout: () =>
     set({
       user: null,
       isAuthenticated: false,
+      isLoading: false,
     }),
 }));

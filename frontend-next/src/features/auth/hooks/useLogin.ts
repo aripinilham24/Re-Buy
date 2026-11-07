@@ -1,33 +1,33 @@
 "use client";
-import { useState } from "react";
-import { toast } from "sonner";
+
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import type { LoginTypeProps } from "../auth.types";
-import { loginService } from "../services/authServices";
+import { toast } from "sonner";
+import type { LoginInput } from "@rebuy/contracts";
+import { useAuthStore } from "@/store/auth.store";
 import { getErrorMessage } from "@/lib/errors";
+import { loginService } from "../services/authServices";
 
-export const useLogin = () => {
-  const [loading, setLoading] = useState(false);
+export const useLogin = (redirectTo = "/dashboard") => {
   const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser);
 
-  const login = async (data: LoginTypeProps) => {
-    setLoading(true);
-    try {
-      await loginService(data);
+  const mutation = useMutation({
+    mutationFn: (data: LoginInput) => loginService(data),
+    onSuccess: ({ user }) => {
+      setUser(user);
       toast.success("Login berhasil");
-      router.push("/dashboard");
-    } catch (error) {
+      router.push(redirectTo);
+    },
+    onError: (error) => {
       toast.error(
         getErrorMessage(
           error,
           "Login gagal. Periksa kembali email dan password Anda.",
         ),
       );
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
-  return { login, loading };
+  return { login: mutation.mutateAsync, loading: mutation.isPending };
 };
