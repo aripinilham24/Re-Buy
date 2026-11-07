@@ -32,13 +32,19 @@ export const validate = (schemas: ValidationSchemas): RequestHandler => {
       };
       next();
     } catch (error) {
-      if (error instanceof ZodError) {
+      const isZodError =
+        error instanceof ZodError ||
+        (typeof error === "object" &&
+          error !== null &&
+          (error as { name?: string }).name === "ZodError");
+
+      if (isZodError) {
         return next(
           new AppError(
             "Validation failed",
             400,
             "VALIDATION_ERROR",
-            error.flatten(),
+            (error as ZodError).flatten(),
           ),
         );
       }
