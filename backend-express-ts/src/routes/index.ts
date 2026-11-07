@@ -31,6 +31,7 @@ import {
   adminChatRouter,
   userChatRouter,
 } from "../features/chat/chat.routes.js";
+import AdminRoutes from "../features/admin/admin.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -104,5 +105,6 @@ router.use(
   authorize("admin"),
   adminChatRouter,
 );
+router.use("/admin", verifyAuth, authorize("admin"), AdminRoutes);
 
 export default router;

@@ -7,7 +7,7 @@ import type {
   OrderStatusUpdateInput,
 } from "@rebuy/contracts";
 import { AppError } from "../../common/errors.js";
-import { env } from "../../config/env.js";
+import { getShippingFlatRate } from "../setting/setting.service.js";
 import * as addressRepository from "../user/address.repository.js";
 import * as cartService from "../cart/cart.service.js";
 import * as couponRepository from "../coupon/coupon.repository.js";
@@ -66,7 +66,7 @@ export const quote = async (
     ? await validateCoupon(couponCode, cart.subtotal, userId)
     : null;
   const discount = coupon?.discount ?? 0;
-  const shippingCost = env.SHIPPING_FLAT_RATE;
+  const shippingCost = await getShippingFlatRate();
 
   return {
     subtotal: cart.subtotal,
@@ -104,7 +104,7 @@ export const checkout = async (
     ? await validateCoupon(input.couponCode, cart.subtotal, userId)
     : null;
   const discount = coupon?.discount ?? 0;
-  const shippingCost = env.SHIPPING_FLAT_RATE;
+  const shippingCost = await getShippingFlatRate();
   const grandTotal = cart.subtotal - discount + shippingCost;
   if (grandTotal < 0) {
     throw AppError.badRequest("Invalid order total");
