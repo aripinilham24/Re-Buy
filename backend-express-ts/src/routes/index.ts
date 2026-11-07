@@ -26,6 +26,7 @@ import {
   publicReviewRouter,
   userReviewRouter,
 } from "../features/review/review.routes.js";
+import NotificationRoutes from "../features/notification/notification.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -79,6 +80,7 @@ router.use("/orders", userOrderRouter);
 router.use("/payments", PaymentRoutes);
 router.use("/reviews", publicReviewRouter);
 router.use("/reviews", userReviewRouter);
+router.use("/notifications", NotificationRoutes);
 router.use(
   "/admin/orders",
   verifyAuth,

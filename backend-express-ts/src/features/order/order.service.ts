@@ -13,6 +13,7 @@ import * as cartService from "../cart/cart.service.js";
 import * as couponRepository from "../coupon/coupon.repository.js";
 import { validateCoupon } from "../coupon/coupon.service.js";
 import * as productRepository from "../product/product.repository.js";
+import { notify } from "../notification/notification.service.js";
 import * as orderRepository from "./order.repository.js";
 import { toOrderDto } from "./order.mapper.js";
 import { generateOrderNumber } from "./order.number.js";
@@ -288,6 +289,18 @@ const applyTransition = async (
     options,
   );
   if (!updated) throw AppError.notFound("Order not found");
+
+  try {
+    await notify({
+      userId: order.userId.toString(),
+      type: "order",
+      title: `Pesanan ${order.orderNumber}`,
+      message: `Status pesanan berubah menjadi ${status}`,
+      link: `/orders/${order._id.toString()}`,
+    });
+  } catch {
+    // Notifications should never block an order transition.
+  }
 
   return toOrderDto(updated);
 };
