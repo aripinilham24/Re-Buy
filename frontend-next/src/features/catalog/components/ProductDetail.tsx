@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { conditionLabels, formatCurrency } from "@/lib/format";
 import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
+import { ReviewSection } from "@/features/review/components/ReviewSection";
 import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { useProduct } from "../hooks/useProducts";
 import { ProductGallery } from "./ProductGallery";
@@ -100,6 +101,12 @@ export function ProductDetail() {
           />
           <WishlistButton productId={product.productId} />
         </div>
+
+        <ReviewSection
+          productId={product.productId}
+          ratingAvg={product.ratingAvg}
+          ratingCount={product.ratingCount}
+        />
       </div>
     </main>
   );

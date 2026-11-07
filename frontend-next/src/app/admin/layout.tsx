@@ -29,6 +29,9 @@ export default function AdminLayout({
             <Link href="/admin/coupons" className="text-green-400">
               Kupon
             </Link>
+            <Link href="/admin/reviews" className="text-green-400">
+              Review
+            </Link>
           </nav>
         </header>
         {children}
