@@ -19,7 +19,7 @@ export const updateAddress = (
   data: UpdateAddressInput,
 ) =>
   AddressModel.findOneAndUpdate({ _id: addressId, userId }, data, {
-    new: true,
+    returnDocument: "after",
     runValidators: true,
   });
 
@@ -36,7 +36,7 @@ export const setDefaultAddress = (
   AddressModel.findOneAndUpdate(
     { _id: addressId, userId },
     { isDefault: true },
-    { new: true },
+    { returnDocument: "after" },
   );
 
 export const findFirstAddress = (userId: string) =>

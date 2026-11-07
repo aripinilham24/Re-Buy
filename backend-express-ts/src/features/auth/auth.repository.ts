@@ -19,7 +19,7 @@ export const createUser = (data: {
 }) => UserModel.create(data);
 
 export const updateUser = (userId: string, data: Record<string, unknown>) =>
-  UserModel.findByIdAndUpdate(userId, data, { new: true });
+  UserModel.findByIdAndUpdate(userId, data, { returnDocument: "after" });
 
 export const createAuthToken = (data: {
   userId: UserDocument["_id"];
@@ -59,7 +59,7 @@ export const consumeAuthToken = (
       expiresAt: { $gt: new Date() },
     },
     { usedAt: new Date() },
-    { new: true },
+    { returnDocument: "after" },
   );
 
 export const revokeAuthTokens = (

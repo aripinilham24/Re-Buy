@@ -44,6 +44,7 @@ export const createApp = () => {
       limit: 300,
       standardHeaders: "draft-8",
       legacyHeaders: false,
+      skip: () => env.NODE_ENV === "test",
       message: {
         success: false,
         message: "Too many requests, please try again later",

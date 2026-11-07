@@ -12,12 +12,14 @@ import {
 import AuthController from "./auth.controller.js";
 import { verifyAuth } from "../../middlewares/auth.middleware.js";
 import { validate } from "../../middlewares/validate.middleware.js";
+import { env } from "../../config/env.js";
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 20,
   standardHeaders: "draft-8",
   legacyHeaders: false,
+  skip: () => env.NODE_ENV === "test",
   message: {
     success: false,
     message: "Too many authentication attempts, try again later",

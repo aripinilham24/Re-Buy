@@ -7,6 +7,6 @@ export const updateUserProfile = (
   data: { username: string },
 ) =>
   UserModel.findByIdAndUpdate(userId, data, {
-    new: true,
+    returnDocument: "after",
     runValidators: true,
   });
