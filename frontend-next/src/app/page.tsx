@@ -1,9 +1,5 @@
-import Dashboard from "./dashboard/page";
-
-// export const metadata = {
-//   title: "Home",
-// };
+import { HomePage } from "@/features/home/components/HomePage";
 
 export default function Home() {
-  return <Dashboard />;
+  return <HomePage />;
 }
