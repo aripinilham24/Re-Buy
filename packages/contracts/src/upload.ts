@@ -13,6 +13,7 @@ export const presignUploadSchema = z.object({
   folder: z.enum(["products", "avatars"]).default("products"),
 });
 
+export type UploadContentType = z.infer<typeof uploadContentTypeSchema>;
 export type PresignUploadInput = z.infer<typeof presignUploadSchema>;
 
 export interface PresignUploadResult {
