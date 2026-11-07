@@ -4,3 +4,4 @@ export * from "./user.js";
 export * from "./category.js";
 export * from "./product.js";
 export * from "./wishlist.js";
+export * from "./upload.js";

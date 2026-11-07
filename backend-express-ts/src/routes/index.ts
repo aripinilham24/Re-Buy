@@ -9,6 +9,7 @@ import {
   adminProductRouter,
   publicProductRouter,
 } from "../features/product/product.routes.js";
+import UploadRoutes from "../features/upload/upload.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -42,6 +43,12 @@ router.use(
   verifyAuth,
   authorize("admin"),
   adminProductRouter,
+);
+router.use(
+  "/uploads",
+  verifyAuth,
+  authorize("admin"),
+  UploadRoutes,
 );
 
 export default router;
