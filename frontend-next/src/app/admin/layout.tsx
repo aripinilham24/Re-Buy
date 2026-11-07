@@ -16,12 +16,18 @@ export default function AdminLayout({
               Kelola katalog dan kategori Re:Buy.
             </p>
           </div>
-          <nav className="flex gap-4 text-sm">
+          <nav className="flex flex-wrap gap-4 text-sm">
             <Link href="/admin/products" className="text-green-400">
               Produk
             </Link>
             <Link href="/admin/categories" className="text-green-400">
               Kategori
+            </Link>
+            <Link href="/admin/orders" className="text-green-400">
+              Pesanan
+            </Link>
+            <Link href="/admin/coupons" className="text-green-400">
+              Kupon
             </Link>
           </nav>
         </header>
