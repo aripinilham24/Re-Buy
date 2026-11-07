@@ -1,4 +1,4 @@
-import Register from "@/src/features/auth/components/Register";
+import Register from "@/features/auth/components/Register";
 
 export const metadata = {
   title: "Register",

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Dashboard from "./dashboard/page";
 
 // export const metadata = {

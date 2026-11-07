@@ -1,4 +1,4 @@
-import {DashboardComponent} from "@/src/features/dashboard/components/Dashboard"
+import {DashboardComponent} from "@/features/dashboard/components/Dashboard"
 export const metadata = {
   title: "Dashboard",
 };

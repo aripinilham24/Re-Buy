@@ -1,4 +1,4 @@
-import ForgotPw from "@/src/features/auth/components/ForgotPw";
+import ForgotPw from "@/features/auth/components/ForgotPw";
 
 export default function ForgotPwPage() {
   return <ForgotPw />;

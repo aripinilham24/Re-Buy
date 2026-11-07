@@ -1,5 +1,5 @@
-import api from "@/src/lib/axios";
-import { useAuthStore } from "@/src/store/auth.store";
+import api from "@/lib/axios";
+import { useAuthStore } from "@/store/auth.store";
 
 export const fetchMe = async () => {
   try {

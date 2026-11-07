@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuthStore } from "@/src/store/auth.store";
 import Link from "next/link";
-import Button from "@/src/components/ui/Button";
+import { useAuthStore } from "@/store/auth.store";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const user = useAuthStore((s) => s.user);
