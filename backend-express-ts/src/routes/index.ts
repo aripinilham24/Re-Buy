@@ -10,6 +10,7 @@ import {
   publicProductRouter,
 } from "../features/product/product.routes.js";
 import UploadRoutes from "../features/upload/upload.routes.js";
+import WishlistRoutes from "../features/wishlist/wishlist.routes.js";
 import { sendSuccess } from "../common/http.js";
 import { verifyAuth } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
@@ -50,5 +51,6 @@ router.use(
   authorize("admin"),
   UploadRoutes,
 );
+router.use("/wishlist", WishlistRoutes);
 
 export default router;
