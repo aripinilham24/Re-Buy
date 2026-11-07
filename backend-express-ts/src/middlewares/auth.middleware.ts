@@ -14,17 +14,17 @@ export const verifyAuth = (
   res: Response,
   next: NextFunction,
 ) => {
+  const token = req.cookies?.token;
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+      code: "UNAUTHORIZED",
+    });
+  }
+
   try {
-    const token = req.cookies?.token;
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-        code: "UNAUTHORIZED",
-      });
-    }
-
     const decoded = jwt.verify(
       token,
       env.ACCESS_TOKEN_SECRET,
@@ -40,11 +40,12 @@ export const verifyAuth = (
 
     req.user = decoded;
     next();
-  } catch {
+  } catch (error) {
+    const expired = error instanceof jwt.TokenExpiredError;
     return res.status(401).json({
       success: false,
-      message: "Invalid token",
-      code: "INVALID_TOKEN",
+      message: expired ? "Access token expired" : "Invalid token",
+      code: expired ? "TOKEN_EXPIRED" : "INVALID_TOKEN",
     });
   }
 };

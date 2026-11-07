@@ -1,13 +1,19 @@
 import type { NextFunction, Request, Response } from "express";
 import type {
+  LoginInput,
   RegisterInput,
   ResendVerificationInput,
   VerifyEmailInput,
 } from "@rebuy/contracts";
 import { sendSuccess } from "../../common/http.js";
+import {
+  clearAuthCookies,
+  REFRESH_COOKIE,
+  setAuthCookies,
+} from "../../common/cookies.js";
+import { AppError } from "../../common/errors.js";
 import { getValidated } from "../../middlewares/validate.middleware.js";
 import type { AuthRequest } from "../../middlewares/auth.middleware.js";
-import { env } from "../../config/env.js";
 import services from "./auth.services.js";
 
 export const register = async (
@@ -63,14 +69,44 @@ export const login = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await services.login(req.body);
-    res.cookie("token", result.tokens.accessToken, {
-      httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
-    });
-    res.status(200).json(result.data);
+    const input = getValidated<LoginInput>(req, "body");
+    const { user, tokens } = await services.login(input);
+    setAuthCookies(res, tokens);
+    return sendSuccess(res, { user }, "Logged in");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refresh = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const refreshToken = req.cookies?.[REFRESH_COOKIE] as string | undefined;
+    if (!refreshToken) {
+      throw AppError.unauthorized("Refresh token is missing");
+    }
+
+    const { user, tokens } = await services.refresh(refreshToken);
+    setAuthCookies(res, tokens);
+    return sendSuccess(res, { user }, "Session refreshed");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const refreshToken = req.cookies?.[REFRESH_COOKIE] as string | undefined;
+    await services.logout(refreshToken);
+    clearAuthCookies(res);
+    return sendSuccess(res, { loggedOut: true }, "Logged out");
   } catch (error) {
     next(error);
   }
@@ -82,8 +118,8 @@ export const me = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await services.me(req.user!.userId);
-    return sendSuccess(res, result.data);
+    const user = await services.me(req.user!.userId);
+    return sendSuccess(res, user);
   } catch (error) {
     next(error);
   }
@@ -94,5 +130,7 @@ export default {
   verifyEmail,
   resendVerification,
   login,
+  refresh,
+  logout,
   me,
 };

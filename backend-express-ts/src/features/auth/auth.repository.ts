@@ -44,6 +44,21 @@ export const findAuthTokenByHash = (
 export const markAuthTokenUsed = (tokenId: Types.ObjectId) =>
   AuthTokenModel.findByIdAndUpdate(tokenId, { usedAt: new Date() });
 
+export const consumeAuthToken = (
+  tokenHash: string,
+  type: "refresh" | "verify_email" | "reset_password",
+) =>
+  AuthTokenModel.findOneAndUpdate(
+    {
+      tokenHash,
+      type,
+      usedAt: null,
+      expiresAt: { $gt: new Date() },
+    },
+    { usedAt: new Date() },
+    { new: true },
+  );
+
 export const revokeAuthTokens = (
   userId: Types.ObjectId,
   type?: "refresh" | "verify_email" | "reset_password",

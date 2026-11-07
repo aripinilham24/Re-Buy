@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import {
+  loginSchema,
   registerSchema,
   resendVerificationSchema,
   verifyEmailSchema,
@@ -41,7 +42,14 @@ router.post(
   validate({ body: resendVerificationSchema }),
   AuthController.resendVerification,
 );
-router.post("/login", authLimiter, AuthController.login);
+router.post(
+  "/login",
+  authLimiter,
+  validate({ body: loginSchema }),
+  AuthController.login,
+);
+router.post("/refresh", authLimiter, AuthController.refresh);
+router.post("/logout", AuthController.logout);
 router.get("/me", verifyAuth, AuthController.me);
 
 export default router;

@@ -1,18 +1,21 @@
 import bcrypt from "bcrypt";
 import type {
+  LoginInput,
   RegisterInput,
   ResendVerificationInput,
   VerifyEmailInput,
 } from "@rebuy/contracts";
-import type { FormLogin } from "../../types/formAuth.types.js";
 import { AppError } from "../../common/errors.js";
 import { env } from "../../config/env.js";
 import { sendVerificationEmail } from "../../common/email.js";
-import { validateLogin } from "./auth.validations.js";
-import { createOpaqueToken, hashToken, hoursFromNow } from "./auth.tokens.js";
+import {
+  createOpaqueToken,
+  hashToken,
+  hoursFromNow,
+  issueTokens,
+} from "./auth.tokens.js";
 import * as authRepository from "./auth.repository.js";
 import { toAuthUser } from "./auth.mapper.js";
-import createJwt from "../../utils/jwt.utils.js";
 
 export const register = async (input: RegisterInput) => {
   const existing = await authRepository.findUserByEmail(input.email);
@@ -39,7 +42,7 @@ export const register = async (input: RegisterInput) => {
 };
 
 export const verifyEmail = async (input: VerifyEmailInput) => {
-  const token = await authRepository.findActiveAuthToken(
+  const token = await authRepository.consumeAuthToken(
     hashToken(input.token),
     "verify_email",
   );
@@ -47,7 +50,6 @@ export const verifyEmail = async (input: VerifyEmailInput) => {
     throw AppError.badRequest("Invalid or expired verification token");
   }
 
-  await authRepository.markAuthTokenUsed(token._id);
   await authRepository.updateUser(token.userId.toString(), {
     emailVerifiedAt: new Date(),
   });
@@ -73,43 +75,67 @@ export const resendVerification = async (input: ResendVerificationInput) => {
   return { sent: true };
 };
 
-const login = async (data: FormLogin) => {
-  validateLogin(data);
-  const { email, password } = data;
+export const login = async (input: LoginInput) => {
+  const user = await authRepository.findUserByEmail(input.email, true);
+  if (!user) {
+    throw AppError.unauthorized("Invalid email or password");
+  }
 
-  const user = await authRepository.findUserByEmail(email, true);
-  if (!user) throw new AppError("Invalid email or password", 409);
+  const isPasswordValid = await bcrypt.compare(input.password, user.password!);
+  if (!isPasswordValid) {
+    throw AppError.unauthorized("Invalid email or password");
+  }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password!);
-  if (!isPasswordValid) throw new AppError("Invalid email or password", 409);
+  if (user.isBlocked) {
+    throw AppError.forbidden("Account is blocked");
+  }
 
-  if (user.isBlocked) throw AppError.forbidden("Account is blocked");
+  await authRepository.updateUser(user._id.toString(), {
+    lastLoginAt: new Date(),
+  });
+  const tokens = await issueTokens(user);
 
-  const tokens = createJwt(user);
-
-  return {
-    data: {
-      success: true,
-      message: "User logged in successfully",
-      data: {
-        userId: user._id,
-        name: user.username,
-        email: user.email,
-        profile: user.avatar,
-      },
-    },
-    tokens,
-  };
+  return { user: toAuthUser(user), tokens };
 };
 
-const me = async (userId: string) => {
+export const refresh = async (refreshToken: string) => {
+  const token = await authRepository.consumeAuthToken(
+    hashToken(refreshToken),
+    "refresh",
+  );
+  if (!token) {
+    throw AppError.unauthorized("Invalid refresh token");
+  }
+
+  const user = await authRepository.findUserById(token.userId.toString());
+  if (!user || user.isBlocked) {
+    await authRepository.revokeAuthTokens(token.userId, "refresh");
+    throw AppError.unauthorized("Session expired");
+  }
+
+  const tokens = await issueTokens(user);
+  return { user: toAuthUser(user), tokens };
+};
+
+export const logout = async (refreshToken?: string) => {
+  if (refreshToken) {
+    const token = await authRepository.findAuthTokenByHash(
+      hashToken(refreshToken),
+      "refresh",
+    );
+    if (token) {
+      await authRepository.markAuthTokenUsed(token._id);
+    }
+  }
+
+  return { loggedOut: true };
+};
+
+export const me = async (userId: string) => {
   const user = await authRepository.findUserById(userId);
   if (!user) throw AppError.notFound("User not found");
 
-  return {
-    success: true,
-    data: toAuthUser(user),
-  };
+  return toAuthUser(user);
 };
 
 export default {
@@ -117,5 +143,7 @@ export default {
   verifyEmail,
   resendVerification,
   login,
+  refresh,
+  logout,
   me,
 };
